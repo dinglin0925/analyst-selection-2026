@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.snapshots/
+*.xlsx
+gen_excel.py
+gen_excel2.py
+config-viewer.html

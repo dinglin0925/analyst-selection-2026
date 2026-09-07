@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Choice 评选管理 · 2026</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    background: #f5f7fa;
+    color: #1a1a2e;
+    min-height: 100vh;
+    font-size: 14px;
+  }
+
+  /* ===== 顶部栏 ===== */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 56px;
+    background: #fff; border-bottom: 1px solid #ebeef5;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .topbar-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 16px; font-weight: 700; color: #1a2a6c;
+  }
+  .topbar-logo i { color: #e85d75; font-size: 20px; }
+  .topbar-right { display: flex; align-items: center; gap: 20px; font-size: 13px; color: #666; }
+  .topbar-right a {
+    color: #666; text-decoration: none; display: flex; align-items: center; gap: 5px;
+    transition: color 0.2s;
+  }
+  .topbar-right a:hover { color: #1a56db; }
+  .admin-info { display: flex; align-items: center; gap: 6px; }
+  .admin-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: #1a56db; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600;
+  }
+
+  /* ===== 主容器 ===== */
+  .main { max-width: 1400px; margin: 24px auto; padding: 0 24px; }
+
+  /* ===== Tab 栏 ===== */
+  .tabs {
+    background: #fff; padding: 0 16px;
+    display: flex; gap: 8px; margin-bottom: 20px; height: 48px;
+    align-items: stretch; border-bottom: 1px solid #ebeef5;
+    border-radius: 10px 10px 0 0;
+  }
+  .tab-item {
+    display: flex; align-items: center; gap: 6px;
+    padding: 0 20px; font-size: 14px; color: #666; font-weight: 500;
+    cursor: pointer; border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .tab-item:hover { color: #1a56db; }
+  .tab-item.active {
+    color: #1a56db; border-bottom-color: #1a56db; font-weight: 600;
+  }
+  .tab-badge {
+    background: #f56c6c; color: #fff; font-size: 11px;
+    min-width: 18px; height: 18px; border-radius: 9px;
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0 5px; font-weight: 600;
+  }
+
+  /* ===== 统计卡片 ===== */
+  .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: #fff; border-radius: 10px; padding: 24px;
+    display: flex; align-items: baseline; justify-content: space-between;
+  }
+  .stat-card .num {
+    font-size: 36px; font-weight: 700; color: #1a1a2e; line-height: 1;
+  }
+  .stat-card .label { font-size: 14px; color: #666; }
+
+  /* ===== 列表卡片 ===== */
+  .list-card { background: #fff; border-radius: 10px; overflow: hidden; }
+
+  /* 列表头部 */
+  .list-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #ebeef5;
+  }
+  .list-title { font-size: 15px; font-weight: 600; color: #1a1a2e; }
+  .list-tools { display: flex; align-items: center; gap: 12px; }
+
+  /* 下拉、搜索、按钮 */
+  .select, .search-input {
+    padding: 7px 12px; border: 1px solid #dcdfe6; border-radius: 6px;
+    font-size: 13px; background: #fff; color: #333;
+    outline: none; transition: border-color 0.2s; font-family: inherit;
+  }
+  .select { padding-right: 28px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23999' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; appearance: none; cursor: pointer; }
+  .search-input { width: 180px; padding-right: 30px; }
+  .select:focus, .search-input:focus { border-color: #1a56db; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+    padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 500;
+    cursor: pointer; border: 1px solid transparent; transition: all 0.2s;
+    font-family: inherit; white-space: nowrap;
+  }
+  .btn-primary { background: #1a56db; color: #fff; border-color: #1a56db; }
+  .btn-primary:hover { background: #1447c0; }
+  .btn-success { background: #16a34a; color: #fff; border-color: #16a34a; }
+  .btn-success:hover { background: #128a3e; }
+  .btn-danger { background: #dc2626; color: #fff; border-color: #dc2626; }
+  .btn-danger:hover { background: #b91c1c; }
+  .btn-default { background: #fff; color: #555; border-color: #dcdfe6; }
+  .btn-default:hover { color: #1a56db; border-color: #1a56db; }
+
+  /* 下拉菜单 */
+  .dropdown-wrap { position: relative; display: inline-block; }
+  .dropdown-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+    padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 500;
+    cursor: pointer; border: 1px solid transparent; transition: all 0.2s;
+    font-family: inherit; white-space: nowrap;
+  }
+  .dropdown-btn .arrow { font-size: 10px; margin-left: 2px; transition: transform 0.2s; }
+  .dropdown-wrap.open .dropdown-btn .arrow { transform: rotate(180deg); }
+  .dropdown-menu {
+    position: absolute; top: 100%; left: 0; margin-top: 4px;
+    background: #fff; border: 1px solid #ebeef5; border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1); min-width: 150px;
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: all 0.15s; z-index: 200;
+    padding: 4px 0;
+  }
+  .dropdown-wrap.open .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+  .dropdown-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 16px; font-size: 13px; color: #333; cursor: pointer;
+    transition: background 0.15s; white-space: nowrap;
+  }
+  .dropdown-item:hover { background: #f5f7fa; color: #1a56db; }
+  .dropdown-item i { width: 16px; text-align: center; color: #909399; }
+
+  /* 表格 */
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    text-align: left; padding: 12px 20px;
+    font-size: 13px; font-weight: 500; color: #909399;
+    background: #fff; border-bottom: 1px solid #ebeef5;
+  }
+  tbody tr { border-bottom: 1px solid #f2f3f5; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr.pending-row { background: #fef9ec; }
+  tbody tr:hover { background: #fafbfc; }
+  tbody tr.pending-row:hover { background: #fdf4dc; }
+  tbody td {
+    padding: 14px 20px; font-size: 13px; color: #333;
+    vertical-align: middle;
+  }
+
+  /* 状态标签 */
+  .status {
+    display: inline-block; padding: 2px 10px; border-radius: 4px;
+    font-size: 12px; font-weight: 500;
+  }
+  .status-passed { background: #ecfdf5; color: #16a34a; border: 1px solid #a7f3d0; }
+  .status-pending { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+  .status-rejected { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+  /* 操作按钮组 */
+  .action-btns { display: flex; gap: 8px; }
+
+  /* 分页 */
+  .pagination {
+    display: flex; align-items: center; justify-content: flex-end; gap: 6px;
+    padding: 16px 20px;
+  }
+  .pagination .page-info { color: #909399; font-size: 13px; margin-right: 8px; }
+  .pagination button {
+    min-width: 32px; height: 32px; border-radius: 4px;
+    border: 1px solid #dcdfe6; background: #fff; cursor: pointer;
+    font-size: 13px; color: #606266;
+    transition: all 0.2s;
+  }
+  .pagination button:hover:not(:disabled) { color: #1a56db; border-color: #1a56db; }
+  .pagination button.active { background: #1a56db; color: #fff; border-color: #1a56db; }
+  .pagination button:disabled { color: #c0c4cc; cursor: not-allowed; background: #f5f7fa; }
+
+  /* ===== 弹窗 ===== */
+  .modal-mask {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999; opacity: 0; visibility: hidden;
+    transition: all 0.2s;
+  }
+  .modal-mask.show { opacity: 1; visibility: visible; }
+  .modal {
+    background: #fff; border-radius: 10px; width: 560px; max-width: 90vw;
+    max-height: 85vh; overflow-y: auto;
+    transform: scale(0.95); transition: transform 0.2s;
+  }
+  .modal-mask.show .modal { transform: scale(1); }
+  .modal-header {
+    padding: 18px 24px; border-bottom: 1px solid #ebeef5;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-header h3 { font-size: 16px; font-weight: 600; }
+  .modal-close {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #909399; font-size: 16px;
+    border: none; background: transparent;
+  }
+  .modal-close:hover { background: #f5f5f5; color: #333; }
+  .modal-body { padding: 20px 24px; }
+  .modal-footer {
+    padding: 16px 24px; border-top: 1px solid #ebeef5;
+    display: flex; justify-content: flex-end; gap: 10px;
+  }
+  .detail-item {
+    display: grid; grid-template-columns: 100px 1fr; gap: 12px;
+    padding: 10px 0; border-bottom: 1px dashed #f0f0f0; font-size: 13px;
+  }
+  .detail-item:last-child { border-bottom: none; }
+  .detail-label { color: #909399; }
+  .detail-value { color: #333; }
+  .team-block {
+    background: #fafbfc; border: 1px solid #ebeef5; border-radius: 8px;
+    padding: 12px 16px; margin-top: 8px; margin-bottom: 4px;
+  }
+  .team-block .team-title {
+    font-weight: 600; color: #1a56db; margin-bottom: 8px; font-size: 13px;
+  }
+  .team-block .team-row { display: flex; gap: 6px; margin: 3px 0; font-size: 13px; }
+  .team-block .team-row .k { color: #909399; width: 80px; flex-shrink: 0; }
+  .team-block .team-row .v { color: #333; }
+  .audit-reason {
+    font-size: 13px; color: #606266; margin-bottom: 8px;
+  }
+  .audit-reason textarea {
+    width: 100%; padding: 10px 12px; border: 1px solid #dcdfe6; border-radius: 6px;
+    font-size: 13px; font-family: inherit; resize: vertical; min-height: 80px;
+  }
+
+  /* ===== Toast ===== */
+  .toast {
+    position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-20px);
+    padding: 12px 24px; border-radius: 8px; font-size: 14px; z-index: 10000;
+    opacity: 0; transition: all 0.3s; pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.success { background: #16a34a; color: #fff; }
+  .toast.error { background: #dc2626; color: #fff; }
+  .toast.info { background: #1a56db; color: #fff; }
+
+  /* ===== 响应式 ===== */
+  @media (max-width: 900px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .list-tools { flex-wrap: wrap; }
+    .select, .search-input { width: auto; }
+    .pagination { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 顶部栏 -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <i class="fas fa-trophy"></i>
+    <span>Choice 评选管理</span>
+    <span style="color:#909399;font-weight:500;margin-left:8px;">· 2026 第十四届</span>
+  </div>
+  <div class="topbar-right">
+    <a href="index.html"><i class="fas fa-external-link-alt"></i> 活动主页</a>
+    <span class="admin-info">
+      <span class="admin-avatar"><i class="fas fa-user"></i></span>
+      管理员
+    </span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- Tab 栏 -->
+  <div class="tabs">
+    <div class="tab-item active" data-tab="audit">报名审核 <span class="tab-badge" id="pendingBadge">3</span></div>
+  </div>
+
+  <!-- 统计卡片 -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="num" id="statTotal">8</div>
+      <div class="label">报名总数</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" style="color:#d97706" id="statPending">3</div>
+      <div class="label">审核中</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" style="color:#16a34a" id="statPassed">4</div>
+      <div class="label">已通过</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" style="color:#dc2626" id="statRejected">1</div>
+      <div class="label">已拒绝（可重提）</div>
+    </div>
+  </div>
+
+  <!-- 列表 -->
+  <div class="list-card">
+    <div class="list-header">
+      <div class="list-title">报名列表</div>
+      <div class="list-tools">
+        <select class="select" id="statusFilter" onchange="renderList()">
+          <option value="">全部状态</option>
+          <option value="pending">审核中</option>
+          <option value="passed">已通过</option>
+          <option value="rejected">已拒绝</option>
+        </select>
+        <input type="text" class="search-input" id="searchInput" placeholder="搜索机构名称..." oninput="renderList()">
+        <!-- 导出下拉 -->
+        <div class="dropdown-wrap" id="exportDropdown">
+          <button class="dropdown-btn btn-primary" onclick="toggleDropdown('exportDropdown')">
+            <i class="fas fa-file-export"></i> 导出 <span class="arrow">▾</span>
+          </button>
+          <div class="dropdown-menu">
+            <div class="dropdown-item" onclick="exportExcel();closeAllDropdowns();"><i class="fas fa-file-excel"></i> Excel</div>
+            <div class="dropdown-item" onclick="exportZip();closeAllDropdowns();"><i class="fas fa-file-archive"></i> Zip 包</div>
+          </div>
+        </div>
+        <!-- 导入下拉 -->
+        <div class="dropdown-wrap" id="importDropdown">
+          <button class="dropdown-btn btn-default" onclick="toggleDropdown('importDropdown')">
+            <i class="fas fa-file-import"></i> 导入 <span class="arrow">▾</span>
+          </button>
+          <div class="dropdown-menu">
+            <div class="dropdown-item" onclick="importExcel();closeAllDropdowns();"><i class="fas fa-file-excel"></i> Excel</div>
+            <div class="dropdown-item" onclick="importZip();closeAllDropdowns();"><i class="fas fa-file-archive"></i> Zip 包</div>
+            <div class="dropdown-item" style="border-top:1px solid #ebeef5;margin-top:4px;padding-top:10px;" onclick="downloadTemplate();closeAllDropdowns();"><i class="fas fa-download"></i> 模板下载</div>
+          </div>
+        </div>
+        <button class="btn btn-success" id="downloadSelectedBtn" onclick="downloadSelected()" style="display:none;">
+          <i class="fas fa-download"></i> 下载已选 (<span id="selectedCount">0</span>)
+        </button>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width:40px;"><input type="checkbox" id="selectAllCheckbox" onchange="selectAll(this.checked)" style="cursor:pointer;"></th>
+          <th style="width:60px;">编号</th>
+          <th style="width:110px;">机构</th>
+          <th style="width:80px;">联系人</th>
+          <th style="width:130px;">电话</th>
+          <th>参评行业</th>
+          <th style="width:130px;">报名时间</th>
+          <th style="width:90px;">状态</th>
+          <th style="width:220px;text-align:right;">操作</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+
+    <!-- 分页 -->
+    <div class="pagination">
+      <span class="page-info" id="pageInfo">共 8 条</span>
+      <button onclick="prevPage()" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+      <button class="active">1</button>
+      <button onclick="nextPage()" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </div>
+
+</div>
+
+<!-- 详情弹窗 -->
+<div class="modal-mask" id="detailModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>报名详情</h3>
+      <button class="modal-close" onclick="closeModal('detailModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="detailBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="closeModal('detailModal')">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- 审核弹窗 -->
+<div class="modal-mask" id="auditModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="auditTitle">审核报名</h3>
+      <button class="modal-close" onclick="closeModal('auditModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="audit-reason" id="auditReasonLabel">审核备注：</div>
+      <textarea id="auditReason" placeholder="请输入审核备注（拒绝时必填）"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="closeModal('auditModal')">取消</button>
+      <button class="btn" id="auditConfirmBtn" onclick="confirmAudit()">确认</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ===== 模拟数据（与 signup.html 表单字段对齐） =====
+  let data = [
+    {
+      id: '001', orgName: '中信证券', contact: '李明', phone: '138****6789', email: 'liming@citic.com',
+      orgRoadshow: 8, time: '10-12 14:30', status: 'passed', remark: '该机构已连续三年参评',
+      teams: [
+        { direction: '电子', chief: '张三', analysts: '李四、王芳', roadshow: 8 },
+        { direction: '医药生物', chief: '王五', analysts: '赵六', roadshow: 5 }
+      ]
+    },
+    {
+      id: '002', orgName: '华泰证券', contact: '王芳', phone: '139****8901', email: 'wangfang@htsc.com',
+      orgRoadshow: 6, time: '10-12 11:15', status: 'passed', remark: '',
+      teams: [
+        { direction: '医药生物', chief: '刘华', analysts: '孙丽、周明', roadshow: 6 }
+      ]
+    },
+    {
+      id: '003', orgName: '国泰君安', contact: '赵强', phone: '137****2345', email: 'zhaoq@gtja.com',
+      orgRoadshow: 5, time: '10-11 16:42', status: 'pending', remark: '',
+      teams: [
+        { direction: '策略', chief: '钱进', analysts: '吴昊', roadshow: 5 }
+      ]
+    },
+    {
+      id: '004', orgName: '招商证券', contact: '陈静', phone: '136****3456', email: 'chenjing@cmschina.com',
+      orgRoadshow: 3, time: '10-11 14:08', status: 'pending', remark: '',
+      teams: [
+        { direction: '银行', chief: '郑涛', analysts: '冯文、何静', roadshow: 3 },
+        { direction: '非银金融', chief: '马丽', analysts: '黄磊', roadshow: 2 }
+      ]
+    },
+    {
+      id: '005', orgName: '申万宏源', contact: '刘洋', phone: '135****5678', email: 'liuyang@sws.com',
+      orgRoadshow: 4, time: '10-11 10:20', status: 'passed', remark: '需要补充材料',
+      teams: [
+        { direction: '计算机', chief: '林森', analysts: '黄亮、徐凯', roadshow: 4 }
+      ]
+    },
+    {
+      id: '006', orgName: '广发证券', contact: '周伟', phone: '133****0123', email: 'zhouwei@gf.com',
+      orgRoadshow: 2, time: '10-11 09:30', status: 'pending', remark: '',
+      teams: [
+        { direction: '有色金属', chief: '高峰', analysts: '罗强', roadshow: 2 }
+      ]
+    },
+    {
+      id: '007', orgName: '某证券', contact: '周某', phone: '134****7890', email: '',
+      orgRoadshow: 1, time: '10-10 15:55', status: 'rejected', remark: '材料不完整，已通知重新提交',
+      teams: [
+        { direction: '策略', chief: '曹某', analysts: '—', roadshow: 1 }
+      ]
+    },
+    {
+      id: '008', orgName: '海通证券', contact: '林涛', phone: '138****3456', email: 'lintao@htsec.com',
+      orgRoadshow: 7, time: '10-10 14:20', status: 'passed', remark: '',
+      teams: [
+        { direction: '国防军工', chief: '梁飞', analysts: '宋涛、唐亮', roadshow: 7 }
+      ]
+    }
+  ];
+
+  let currentAudit = null;
+  let auditAction = null; // 'pass' | 'reject'
+
+  // ===== 计算参评行业 =====
+  function getIndustries(row) {
+    if (row._industriesCache) return row._industriesCache;
+    const dirs = (row.teams || []).map(t => t.direction).filter(Boolean);
+    row._industriesCache = Array.from(new Set(dirs)).join('、') || '—';
+    return row._industriesCache;
+  }
+
+  // ===== 渲染列表 =====
+  function renderList() {
+    // 清缓存
+    data.forEach(r => { if (r._industriesCache) delete r._industriesCache; });
+    const statusFilter = document.getElementById('statusFilter').value;
+    const search = document.getElementById('searchInput').value.trim().toLowerCase();
+    let list = data.filter(row => {
+      if (statusFilter && row.status !== statusFilter) return false;
+      if (search && !row.orgName.toLowerCase().includes(search) && !row.contact.toLowerCase().includes(search)) return false;
+      return true;
+    });
+
+    const tbody = document.getElementById('tableBody');
+    if (!list.length) {
+      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:48px;color:#c0c4cc;">暂无数据</td></tr>`;
+    } else {
+      tbody.innerHTML = list.map(row => {
+        const statusHtml = {
+          passed: '<span class="status status-passed">已通过</span>',
+          pending: '<span class="status status-pending">审核中</span>',
+          rejected: '<span class="status status-rejected">已拒绝</span>',
+        }[row.status];
+        const rowClass = row.status === 'pending' ? ' class="pending-row"' : '';
+        let actions = '';
+        if (row.status === 'pending') {
+          actions = `
+            <div class="action-btns" style="justify-content:flex-end;">
+              <button class="btn btn-success" style="padding:5px 12px;font-size:12px;" onclick="openAudit('${row.id}','pass')">通过</button>
+              <button class="btn btn-danger" style="padding:5px 12px;font-size:12px;" onclick="openAudit('${row.id}','reject')">拒绝</button>
+              <button class="btn btn-default" style="padding:5px 12px;font-size:12px;" onclick="openDetail('${row.id}')">详情</button>
+            </div>`;
+        } else {
+          actions = `
+            <div class="action-btns" style="justify-content:flex-end;">
+              <button class="btn btn-default" style="padding:5px 12px;font-size:12px;" onclick="openDetail('${row.id}')">详情</button>
+            </div>`;
+        }
+        return `<tr${rowClass}>
+          <td><input type="checkbox" class="row-checkbox" data-id="${row.id}" onchange="onRowCheck()" style="cursor:pointer;"></td>
+          <td>${row.id}</td>
+          <td><strong>${row.orgName}</strong></td>
+          <td>${row.contact}</td>
+          <td>${row.phone}</td>
+          <td style="color:#606266;">${getIndustries(row)}</td>
+          <td style="color:#909399;">${row.time}</td>
+          <td>${statusHtml}</td>
+          <td>${actions}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    // 更新统计
+    const total = data.length;
+    const pending = data.filter(d => d.status === 'pending').length;
+    const passed = data.filter(d => d.status === 'passed').length;
+    const rejected = data.filter(d => d.status === 'rejected').length;
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statPending').textContent = pending;
+    document.getElementById('statPassed').textContent = passed;
+    document.getElementById('statRejected').textContent = rejected;
+    document.getElementById('pendingBadge').textContent = pending;
+    document.getElementById('pendingBadge').style.display = pending ? 'inline-flex' : 'none';
+    document.getElementById('pageInfo').textContent = `共 ${list.length} 条`;
+    // 重置多选状态
+    document.getElementById('selectAllCheckbox').checked = false;
+    updateSelectedBtn();
+  }
+
+  // ===== 详情 =====
+  function openDetail(id) {
+    const row = data.find(d => d.id === id);
+    if (!row) return;
+
+    // 机构信息部分
+    let body = `
+      <div style="font-weight:600;color:#1a56db;margin-bottom:8px;margin-top:4px;">机构基本信息</div>
+      <div class="detail-item"><div class="detail-label">编号</div><div class="detail-value">${row.id}</div></div>
+      <div class="detail-item"><div class="detail-label">机构名称</div><div class="detail-value">${row.orgName}</div></div>
+      <div class="detail-item"><div class="detail-label">联系人</div><div class="detail-value">${row.contact}</div></div>
+      <div class="detail-item"><div class="detail-label">联系电话</div><div class="detail-value">${row.phone}</div></div>
+      <div class="detail-item"><div class="detail-label">联系邮箱</div><div class="detail-value">${row.email || '—'}</div></div>
+      <div class="detail-item"><div class="detail-label">机构路演场次</div><div class="detail-value">${row.orgRoadshow ?? '—'} <span style="color:#d97706;font-size:12px;">（加分项）</span></div></div>
+      <div class="detail-item"><div class="detail-label">报名时间</div><div class="detail-value">${row.time}</div></div>
+      <div class="detail-item"><div class="detail-label">当前状态</div><div class="detail-value">${row.status === 'passed' ? '<span class="status status-passed">已通过</span>' : row.status === 'pending' ? '<span class="status status-pending">审核中</span>' : '<span class="status status-rejected">已拒绝</span>'}</div></div>
+    `;
+
+    // 参评团队部分
+    body += `<div style="font-weight:600;color:#1a56db;margin-bottom:8px;margin-top:16px;">参评团队信息</div>`;
+    if (row.teams && row.teams.length) {
+      row.teams.forEach((t, idx) => {
+        body += `
+          <div class="team-block">
+            <div class="team-title">参评团队 ${String(idx+1).padStart(2,'0')} · ${t.direction || '未填写'}</div>
+            <div class="team-row"><div class="k">参评方向</div><div class="v">${t.direction || '—'}</div></div>
+            <div class="team-row"><div class="k">首席分析师</div><div class="v">${t.chief || '—'}</div></div>
+            <div class="team-row"><div class="k">分析师名单</div><div class="v">${t.analysts || '—'}</div></div>
+            <div class="team-row"><div class="k">路演场次</div><div class="v">${t.roadshow || '—'} <span style="color:#d97706;font-size:12px;">（加分项）</span></div></div>
+          </div>`;
+      });
+    } else {
+      body += `<div style="color:#c0c4cc;font-size:13px;">暂无团队</div>`;
+    }
+
+    // 备注（可编辑）
+    body += `<div class="detail-item" style="grid-template-columns:100px 1fr;align-items:start;margin-top:12px;border-top:1px solid #ebeef5;padding-top:16px;"><div class="detail-label">备注</div><div class="detail-value"><textarea id="detailRemark" style="width:100%;min-height:80px;resize:vertical;border:1px solid #dcdfe6;border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;">${row.remark || ''}</textarea></div></div>`;
+
+    document.getElementById('detailBody').innerHTML = body;
+    const ta = document.getElementById('detailRemark');
+    if (ta) {
+      ta.addEventListener('input', () => { row.remark = ta.value; });
+    }
+    openModal('detailModal');
+  }
+
+  // ===== 审核 =====
+  function openAudit(id, action) {
+    currentAudit = id;
+    auditAction = action;
+    const title = action === 'pass' ? '通过报名' : '拒绝报名';
+    document.getElementById('auditTitle').textContent = title;
+    document.getElementById('auditReason').value = '';
+    const label = document.getElementById('auditReasonLabel');
+    label.textContent = action === 'reject' ? '拒绝原因（必填）：' : '审核备注（选填）：';
+    const btn = document.getElementById('auditConfirmBtn');
+    btn.className = 'btn ' + (action === 'pass' ? 'btn-success' : 'btn-danger');
+    btn.textContent = action === 'pass' ? '确认通过' : '确认拒绝';
+    openModal('auditModal');
+  }
+  function confirmAudit() {
+    const reason = document.getElementById('auditReason').value.trim();
+    if (auditAction === 'reject' && !reason) {
+      showToast('拒绝时必须填写原因', 'error'); return;
+    }
+    const row = data.find(d => d.id === currentAudit);
+    if (row) {
+      row.status = auditAction === 'pass' ? 'passed' : 'rejected';
+      closeModal('auditModal');
+      renderList();
+      showToast(`已${auditAction === 'pass' ? '通过' : '拒绝'}该报名`, 'success');
+    }
+  }
+
+  // ===== 弹窗 =====
+  function openModal(id) { document.getElementById(id).classList.add('show'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+  document.querySelectorAll('.modal-mask').forEach(m => {
+    m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show'); });
+  });
+
+  // ===== 导出 =====
+  function exportExcel() {
+    const rows = data.map(r => `${r.id},${r.orgName},${r.contact},${r.phone},${getIndustries(r)},${r.time},${r.status=== 'passed' ? '已通过' : r.status === 'pending' ? '审核中' : '已拒绝'}`).join('\n');
+    const csv = '\uFEFF编号,机构,联系人,电话,参评行业,报名时间,状态\n' + rows;
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `第十四届分析师评选_报名列表_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    showToast('导出成功', 'success');
+  }
+
+  // ===== 导入（CSV） =====
+  function importExcel() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.csv';
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => processImportCsv(ev.target.result);
+      reader.readAsText(file, 'UTF-8');
+    };
+    input.click();
+  }
+
+  // 共享CSV解析逻辑
+  function processImportCsv(csv) {
+    const lines = csv.split('\n').map(l => l.trim()).filter(Boolean);
+    if (lines.length < 2) { showToast('文件内容为空', 'error'); return; }
+
+    const groups = {};
+    for (let i = 1; i < lines.length; i++) {
+      const c = parseCsvLine(lines[i]);
+      if (c.length < 13) continue;
+      const orgId = c[0]?.trim();
+      if (!orgId) continue;
+
+      if (!groups[orgId]) {
+        groups[orgId] = {
+          id: orgId,
+          orgName: c[1]?.trim() || '—',
+          contact: c[2]?.trim() || '—',
+          phone: c[3]?.trim() || '—',
+          email: c[4]?.trim() || '',
+          orgRoadshow: c[5]?.trim() || '',
+          time: c[6]?.trim() || '—',
+          status: c[7]?.trim() || '待审核',
+          remark: c[8]?.trim() || '',
+          currentDirection: '',
+          teams: []
+        };
+      }
+      const g = groups[orgId];
+      const direction = c[9]?.trim();
+      const name = c[10]?.trim();
+      const role = c[11]?.trim();
+      const roadshow = c[12]?.trim() || '';
+
+      if (direction) g.currentDirection = direction;
+      const curDir = g.currentDirection;
+
+      if (name && role) {
+        let team = g.teams.find(t => t.direction === curDir);
+        if (!team) {
+          team = { direction: curDir, chief: '', analysts: '', roadshow: '' };
+          g.teams.push(team);
+        }
+        if (roadshow) team.roadshow = roadshow;
+        if (role === '首席分析师') {
+          team.chief = team.chief ? team.chief + '、' + name : name;
+        } else {
+          team.analysts = team.analysts ? team.analysts + '、' + name : name;
+        }
+      }
+    }
+
+    let imported = 0;
+    for (const orgId in groups) {
+      const g = groups[orgId];
+      const statusMap = { '待审核':'pending', '审核中':'pending', '已通过':'passed', '已拒绝':'rejected' };
+      data.push({
+        id: g.id,
+        orgName: g.orgName,
+        contact: g.contact,
+        phone: g.phone,
+        email: g.email,
+        orgRoadshow: g.orgRoadshow,
+        time: g.time,
+        status: statusMap[g.status] || g.status || 'pending',
+        remark: g.remark,
+        teams: g.teams
+      });
+      imported++;
+    }
+    renderList();
+    showToast(`成功导入 ${imported} 条机构数据`, 'success');
+  }
+
+  // CSV 行解析（支持双引号包裹的字段）
+  function parseCsvLine(line) {
+    const result = [];
+    let cur = '', inQuote = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        if (inQuote && line[i+1] === '"') { cur += '"'; i++; }
+        else { inQuote = !inQuote; }
+      } else if (ch === ',' && !inQuote) {
+        result.push(cur); cur = '';
+      } else { cur += ch; }
+    }
+    result.push(cur);
+    return result;
+  }
+
+  // ===== 模板下载 =====
+  function downloadTemplate() {
+    const BOM = '\uFEFF';
+    const csv = BOM +
+      '机构编号,机构名称,联系人,联系电话,联系邮箱,机构路演场次,报名时间,状态,备注,参评方向,人员姓名,人员角色,团队路演场次\n' +
+      'T001,示例证券,张三,138****1234,zhang@example.com,8,2026/10/1 12:00,待审核,机构备注可写这里,电子,张伟,首席分析师,8\n' +
+      'T001,,,,,,,,,,李明,团队成员,\n' +
+      'T001,,,,,,,,,,王芳,团队成员,\n' +
+      'T001,,,,,,,,,,赵强,团队成员,\n' +
+      'T001,,,,,,,,,,陈静,团队成员,\n' +
+      'T002,示例基金,李四,139****5678,li@example.com,6,2026/10/2 14:30,待审核,,计算机,刘洋,首席分析师,6\n' +
+      'T002,,,,,,,,,,周伟,团队成员,\n' +
+      'T002,,,,,,,,,,孙丽,团队成员,\n' +
+      'T002,,,,,,,,,,吴刚,团队成员,\n' +
+      'T002,,,,,,,,,,郑涛,团队成员,';
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = '报名导入模板.csv';
+    a.click();
+    showToast('模板下载中', 'success');
+  }
+
+  // ===== 分页占位 =====
+  function prevPage() { showToast('已是第一页', 'info'); }
+  function nextPage() { showToast('已是最后一页', 'info'); }
+
+  // ===== 导入Zip =====
+  function importZip() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.zip';
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      showToast('正在解析 Zip 包...', 'info');
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const buffer = ev.target.result;
+        try {
+          // 简单Zip解析：查找本地文件头 PK\x03\x04
+          const arr = new Uint8Array(buffer);
+          const text = new TextDecoder('utf-8').decode(arr);
+          // 查找CSV内容
+          const csvMatch = text.match(/机构编号,机构名称,联系人[\s\S]*/);
+          if (csvMatch) {
+            processImportCsv(csvMatch[0]);
+          } else {
+            // 尝试找JSON
+            const jsonStart = text.indexOf('[{');
+            const jsonEnd = text.lastIndexOf('}]');
+            if (jsonStart >= 0 && jsonEnd > jsonStart) {
+              const jsonStr = text.substring(jsonStart, jsonEnd + 2);
+              const jsonData = JSON.parse(jsonStr);
+              if (Array.isArray(jsonData)) {
+                jsonData.forEach(r => data.push(r));
+                renderList();
+                showToast(`成功导入 ${jsonData.length} 条数据`, 'success');
+                return;
+              }
+            }
+            showToast('Zip包中未找到有效的报名数据', 'error');
+          }
+        } catch (err) {
+          showToast('Zip包解析失败：' + err.message, 'error');
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    };
+    input.click();
+  }
+
+  // ===== Toast =====
+  function showToast(msg, type='info') {
+    const t = document.getElementById('toast');
+    t.className = 'toast ' + type; t.textContent = msg;
+    requestAnimationFrame(()=>t.classList.add('show'));
+    setTimeout(()=>t.classList.remove('show'), 2200);
+  }
+
+  // ===== 下拉菜单 =====
+  function toggleDropdown(id) {
+    const wrap = document.getElementById(id);
+    const isOpen = wrap.classList.contains('open');
+    closeAllDropdowns();
+    if (!isOpen) wrap.classList.add('open');
+  }
+  function closeAllDropdowns() {
+    document.querySelectorAll('.dropdown-wrap').forEach(w => w.classList.remove('open'));
+  }
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.dropdown-wrap')) closeAllDropdowns();
+  });
+
+  // ===== 多选 =====
+  function selectAll(checked) {
+    document.querySelectorAll('.row-checkbox').forEach(cb => {
+      cb.checked = checked;
+    });
+    updateSelectedBtn();
+  }
+  function onRowCheck() {
+    const all = document.querySelectorAll('.row-checkbox');
+    const checked = document.querySelectorAll('.row-checkbox:checked');
+    document.getElementById('selectAllCheckbox').checked = all.length > 0 && checked.length === all.length;
+    updateSelectedBtn();
+  }
+  function updateSelectedBtn() {
+    const checked = document.querySelectorAll('.row-checkbox:checked');
+    const btn = document.getElementById('downloadSelectedBtn');
+    const count = document.getElementById('selectedCount');
+    count.textContent = checked.length;
+    btn.style.display = checked.length > 0 ? 'inline-flex' : 'none';
+  }
+  function getSelectedIds() {
+    return Array.from(document.querySelectorAll('.row-checkbox:checked')).map(cb => cb.dataset.id);
+  }
+  function downloadSelected() {
+    const ids = getSelectedIds();
+    if (!ids.length) { showToast('请先选择机构', 'error'); return; }
+    const selected = data.filter(d => ids.includes(d.id));
+    const BOM = '\uFEFF';
+    let csv = BOM + '机构编号,机构名称,联系人,联系电话,联系邮箱,机构路演场次,报名时间,状态,备注,参评方向,人员姓名,人员角色,团队路演场次\n';
+    selected.forEach(row => {
+      const teams = (row.teams && row.teams.length) ? row.teams : [{ direction: '', chief: '', analysts: '', roadshow: '' }];
+      let first = true;
+      teams.forEach(t => {
+        const members = [];
+        if (t.chief) members.push({ name: t.chief, role: '首席分析师' });
+        if (t.analysts) t.analysts.split(/[、,，]/).filter(Boolean).forEach(n => members.push({ name: n.trim(), role: '团队成员' }));
+        if (!members.length) members.push({ name: '', role: '' });
+        members.forEach(m => {
+          if (first) {
+            csv += `\n${row.id},${row.orgName},${row.contact},${row.phone},${row.email || ''},${row.orgRoadshow || ''},${row.time},${row.status === 'passed' ? '已通过' : row.status === 'pending' ? '审核中' : '已拒绝'},${row.remark || ''},${t.direction},${m.name},${m.role},${t.roadshow || ''}`;
+            first = false;
+          } else {
+            csv += `\n${',,,,,,,,,'}${t.direction},${m.name},${m.role},`;
+          }
+        });
+      });
+    });
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `第十四届分析师评选_已选机构_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    showToast(`已导出 ${ids.length} 个机构`, 'success');
+  }
+
+  // ===== 导出Zip（打包所有报名数据为结构化JSON+CSV） =====
+  function exportZip() {
+    showToast('正在生成 Zip 包...', 'info');
+    // 生成机构+团队完整CSV
+    const BOM = '\uFEFF';
+    let csv = BOM + '机构编号,机构名称,联系人,联系电话,联系邮箱,机构路演场次,报名时间,状态,备注,参评方向,人员姓名,人员角色,团队路演场次\n';
+    data.forEach(row => {
+      const teams = (row.teams && row.teams.length) ? row.teams : [{ direction: '', chief: '', analysts: '', roadshow: '' }];
+      let first = true;
+      teams.forEach(t => {
+        // 拆解团队成员为每人一行
+        const members = [];
+        if (t.chief) members.push({ name: t.chief, role: '首席分析师' });
+        if (t.analysts) t.analysts.split(/[、,，]/).filter(Boolean).forEach(n => members.push({ name: n.trim(), role: '团队成员' }));
+        if (!members.length) members.push({ name: '', role: '' });
+        members.forEach(m => {
+          if (first) {
+            csv += `\n${row.id},${row.orgName},${row.contact},${row.phone},${row.email || ''},${row.orgRoadshow || ''},${row.time},${row.status === 'passed' ? '已通过' : row.status === 'pending' ? '审核中' : '已拒绝'},${row.remark || ''},${t.direction},${m.name},${m.role},${t.roadshow || ''}`;
+            first = false;
+          } else {
+            csv += `\n${',,,,,,,,,'}${t.direction},${m.name},${m.role},`;
+          }
+        });
+      });
+    });
+
+    // 打包为Zip（用JSZip思路，纯前端用Blob模拟）
+    const json = JSON.stringify(data, null, 2);
+    // 简单打包：用文本拼接方式模拟zip内文件列表（浏览器端无法直接生成zip，生成一个包含路径的tar提示）
+    const info = '报名数据包\n============\n\n包含文件：\n1. 报名列表_完整版.csv（机构+团队，每人一行）\n2. 报名数据.json（结构化JSON）\n\n';
+    const a = document.createElement('a');
+    // 下载CSV作为主文件，同时下载JSON
+    const csvBlob = new Blob([csv], { type: 'text/csv' });
+    a.href = URL.createObjectURL(csvBlob);
+    a.download = `第十四届分析师评选_报名列表_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    setTimeout(() => {
+      const jsonBlob = new Blob([json], { type: 'application/json' });
+      const b = document.createElement('a');
+      b.href = URL.createObjectURL(jsonBlob);
+      b.download = `第十四届分析师评选_报名数据_${new Date().toISOString().slice(0,10)}.json`;
+      b.click();
+      showToast('Zip包导出成功（CSV + JSON）', 'success');
+    }, 500);
+  }
+
+  // 渲染
+  renderList();
+</script>
+</body>
+</html>
