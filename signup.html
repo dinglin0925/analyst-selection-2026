@@ -183,27 +183,6 @@
 
   .form-tip { font-size: 12px; color: #c27803; margin-top: 4px; }
 
-  /* ===== 参评方向多选下拉 ===== */
-  .multi-select { position: relative; }
-  .ms-toggle {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 11px 14px; border: 1px solid #d0d5dd; border-radius: 8px;
-    font-size: 14px; color: #1a1a2e; background: #fff; cursor: pointer;
-    user-select: none; transition: all 0.2s;
-  }
-  .ms-toggle:hover { border-color: #1a56db; }
-  .ms-placeholder { color: #98a2b3; }
-  .ms-panel {
-    position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 50;
-    background: #fff; border: 1px solid #e5e7eb; border-radius: 8px;
-    box-shadow: 0 8px 24px rgba(16,24,40,0.12); max-height: 260px; overflow-y: auto;
-  }
-  .ms-item {
-    display: flex; align-items: center; gap: 8px;
-    padding: 8px 14px; font-size: 13px; cursor: pointer;
-  }
-  .ms-item:hover { background: #f5f7ff; }
-
   /* ===== 参评团队卡片 ===== */
   .team-card {
     border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px 24px;
@@ -576,22 +555,13 @@
         <div class="form-grid">
           <div class="form-group">
             <label>参评方向 <span class="required">*</span></label>
-            <div class="multi-select" data-team="${i}">
-              <div class="ms-toggle" onclick="toggleDirectionDD(${i}, event)">
-                <span class="${t.direction ? 'ms-text' : 'ms-placeholder'}">${t.direction || '请选择参评方向（可多选）'}</span>
-                <i class="fas fa-caret-down" style="color:#98a2b3;"></i>
-              </div>
-              <div class="ms-panel" style="display:none;">
-                ${DIRECTIONS.filter(Boolean).map(d => `
-                  <label class="ms-item">
-                    <input type="checkbox" value="${d}" ${t.direction.split('、').includes(d) ? 'checked' : ''} onchange="onDirectionCheck(${i})"> ${d}
-                  </label>`).join('')}
-              </div>
-            </div>
+            <select onchange="updateTeam(${i},'direction',this.value)">
+              ${DIRECTIONS.map(d => `<option value="${d}" ${d===t.direction?'selected':''}>${d || '请选择参评方向'}</option>`).join('')}
+            </select>
           </div>
           <div class="form-group">
             <label>首席分析师 <span class="required">*</span></label>
-            <input type="text" placeholder="请输入姓名" value="${t.chief}" oninput="updateTeam(${i},'chief',this.value)">
+            <input type="text" placeholder="多人请用，分隔" value="${t.chief}" oninput="updateTeam(${i},'chief',this.value)">
           </div>
           <div class="form-group">
             <label>分析师名单 <span class="required">*</span></label>
@@ -608,27 +578,6 @@
   }
   function updateTeam(i,k,v){teams[i][k]=v;}
   function addTeam(){teams.push({direction:'',chief:'',analysts:'',roadshow:''});renderTeams();}
-
-  // ===== 参评方向多选 =====
-  function toggleDirectionDD(i, e) {
-    e.stopPropagation();
-    document.querySelectorAll('.multi-select .ms-panel').forEach(p => {
-      if (p.closest('.multi-select').dataset.team !== String(i)) p.style.display = 'none';
-    });
-    const panel = document.querySelector(`.multi-select[data-team="${i}"] .ms-panel`);
-    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-  }
-  function onDirectionCheck(i) {
-    const ms = document.querySelector(`.multi-select[data-team="${i}"]`);
-    const vals = [...ms.querySelectorAll('input:checked')].map(c => c.value);
-    updateTeam(i, 'direction', vals.join('、'));
-    const label = ms.querySelector('.ms-text, .ms-placeholder');
-    label.className = vals.length ? 'ms-text' : 'ms-placeholder';
-    label.textContent = vals.join('、') || '请选择参评方向（可多选）';
-  }
-  document.addEventListener('click', () => {
-    document.querySelectorAll('.multi-select .ms-panel').forEach(p => p.style.display = 'none');
-  });
   function removeTeam(i){teams.splice(i,1);renderTeams();}
 
   // ===== 步骤切换 =====
