@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>销售沟通材料 · 第十四届Choice最佳分析师评选</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Microsoft YaHei", "Segoe UI", sans-serif;
+  background: #f5f7fa;
+  color: #1a1a2e;
+  line-height: 1.7;
+}
+a { color: inherit; text-decoration: none; }
+:root {
+  --primary: #1a2a6c;
+  --blue: #1a56db;
+  --light-blue: #edf4ff;
+  --accent: #e85d75;
+  --green: #13a35b;
+  --orange: #f59e0b;
+  --text-light: #65758b;
+  --border: #dbe5f3;
+  --card: #fff;
+  --shadow: 0 10px 30px rgba(26, 42, 108, 0.08);
+}
+.header {
+  min-height: 360px;
+  background: linear-gradient(135deg, #14245e 0%, #1a56db 62%, #4f8cff 100%);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(255,255,255,0.18), transparent 28%),
+    radial-gradient(circle at 82% 30%, rgba(232,93,117,0.28), transparent 26%),
+    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: auto, auto, 42px 42px, 42px 42px;
+}
+.nav {
+  position: relative;
+  z-index: 2;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+.nav-links { display: flex; gap: 20px; font-size: 14px; opacity: 0.92; }
+.nav-links a:hover { opacity: 0.75; }
+.hero {
+  position: relative;
+  z-index: 2;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 46px 24px 72px;
+}
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  background: rgba(255,255,255,0.13);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 999px;
+  font-size: 14px;
+  margin-bottom: 18px;
+}
+.hero h1 {
+  font-size: 42px;
+  line-height: 1.25;
+  margin-bottom: 16px;
+}
+.hero p {
+  max-width: 760px;
+  color: rgba(255,255,255,0.86);
+  font-size: 17px;
+}
+.hero-actions {
+  margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 20px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 14px;
+  transition: all .2s;
+}
+.btn-white { background: #fff; color: var(--blue); }
+.btn-line { border: 1px solid rgba(255,255,255,0.5); color: #fff; }
+.btn:hover { transform: translateY(-2px); }
+.main {
+  max-width: 1180px;
+  margin: -44px auto 60px;
+  padding: 0 24px;
+  position: relative;
+  z-index: 3;
+}
+.quick-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.quick-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  border: 1px solid #edf1f7;
+}
+.quick-card i {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--light-blue);
+  color: var(--blue);
+  margin-bottom: 12px;
+}
+.quick-card h3 { font-size: 17px; margin-bottom: 6px; }
+.quick-card p { font-size: 13px; color: var(--text-light); }
+.section {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  border: 1px solid #edf1f7;
+  padding: 30px;
+  margin-bottom: 24px;
+}
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 24px;
+  color: var(--primary);
+  margin-bottom: 18px;
+}
+.section-title span {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--blue);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+.lead {
+  font-size: 16px;
+  color: #334155;
+  margin-bottom: 18px;
+}
+.highlight {
+  background: linear-gradient(90deg, #edf4ff, #fff6f8);
+  border: 1px solid #dbeafe;
+  border-left: 4px solid var(--blue);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin: 18px 0;
+}
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 18px;
+}
+.compare-box {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  background: #fbfdff;
+}
+.compare-box.new {
+  border-color: #b7d2ff;
+  background: #f4f8ff;
+}
+.compare-box h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 17px;
+  margin-bottom: 12px;
+}
+.flow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.flow span {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 13px;
+  color: #334155;
+}
+.flow i { color: var(--blue); }
+.timeline {
+  position: relative;
+  margin-top: 20px;
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 20px;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: #d8e5fb;
+}
+.time-item {
+  position: relative;
+  padding-left: 58px;
+  margin-bottom: 22px;
+}
+.time-dot {
+  position: absolute;
+  left: 8px;
+  top: 2px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  z-index: 1;
+}
+.time-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  background: #fbfdff;
+}
+.time-card h3 {
+  color: var(--primary);
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+.time-card .date {
+  color: var(--blue);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+ul { padding-left: 20px; }
+li { margin: 6px 0; color: #334155; }
+.materials {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.material-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  background: #fbfdff;
+}
+.material-card i {
+  color: var(--accent);
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+.material-card h3 { font-size: 18px; margin-bottom: 10px; }
+.material-card p { color: var(--text-light); font-size: 14px; }
+.link-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.link-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  background: #fbfdff;
+  transition: all .2s;
+}
+.link-card:hover {
+  border-color: var(--blue);
+  transform: translateY(-2px);
+}
+.link-card strong { display: block; color: var(--primary); margin-bottom: 4px; }
+.link-card small { color: var(--text-light); word-break: break-all; }
+.check-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.check-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 14px;
+  border-radius: 12px;
+  background: #f8fbff;
+  border: 1px solid #e4ecf8;
+}
+.check-item i { color: var(--green); margin-top: 4px; }
+.footer-note {
+  background: #15235f;
+  color: #fff;
+  border-radius: 18px;
+  padding: 28px;
+  margin-bottom: 40px;
+}
+.footer-note h2 { margin-bottom: 10px; }
+.footer-note p { color: rgba(255,255,255,0.82); }
+@media (max-width: 900px) {
+  .quick-cards, .materials, .compare, .link-grid, .check-list { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 30px; }
+  .nav { align-items: flex-start; flex-direction: column; gap: 14px; }
+  .nav-links { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+<header class="header">
+  <nav class="nav">
+    <div class="logo">Choice 最佳分析师评选 · 销售沟通材料</div>
+    <div class="nav-links">
+      <a href="#intro">大赛介绍</a>
+      <a href="#timeline">时间轴</a>
+      <a href="#materials">运营材料</a>
+      <a href="#links">参考页面</a>
+    </div>
+  </nav>
+  <div class="hero">
+    <div class="hero-tag"><i class="fa-solid fa-bullhorn"></i> 明天销售负责人沟通用</div>
+    <h1>第十四届 Choice 最佳分析师评选<br>销售推进说明</h1>
+    <p>这页主要讲清楚三件事：今年活动是什么、流程有什么变化、销售手里会有哪些材料，以及客户该怎么报名。</p>
+    <div class="hero-actions">
+      <a class="btn btn-white" href="https://dinglin0925.github.io/analyst-selection-2026/" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> 打开今年 Demo</a>
+      <a class="btn btn-line" href="https://choicew2z.eastmoney.com/activity/analysts2025/?sessionid=#/pc" target="_blank"><i class="fa-solid fa-clock-rotate-left"></i> 查看往年页面</a>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+  <section class="quick-cards">
+    <div class="quick-card">
+      <i class="fa-solid fa-laptop-file"></i>
+      <h3>线上报名</h3>
+      <p>今年客户可直接在页面填写并提交，不再线下反复传报名包。</p>
+    </div>
+    <div class="quick-card">
+      <i class="fa-solid fa-folder-open"></i>
+      <h3>材料统一</h3>
+      <p>话术、客户说明文件、报名模板、授权函统一给销售。</p>
+    </div>
+    <div class="quick-card">
+      <i class="fa-solid fa-list-check"></i>
+      <h3>后台审核</h3>
+      <p>报名数据进入后台，支持审核、备注、导入、导出和模板下载。</p>
+    </div>
+    <div class="quick-card">
+      <i class="fa-solid fa-file-signature"></i>
+      <h3>授权确认</h3>
+      <p>未授权机构需要补签研报及数据使用授权书。</p>
+    </div>
+  </section>
+
+  <section class="section" id="intro">
+    <h2 class="section-title"><span>一</span>大赛介绍</h2>
+    <p class="lead">第十四届 Choice 最佳分析师评选，主要是给研究所和分析师团队一个展示窗口。我们会把研究报告、平台浏览、路演、调研等数据沉淀下来，作为后续评选和展示的重要依据。</p>
+    <div class="highlight">
+      <strong>今年最重要的变化：</strong>报名流程线上化。客户不用再下载报名包、线下填写、再发材料回来，而是可以直接进入报名页面，在线填写并提交。
+    </div>
+    <div class="compare">
+      <div class="compare-box">
+        <h3><i class="fa-solid fa-file-arrow-down"></i> 往年流程</h3>
+        <div class="flow">
+          <span>进入专题页</span><i class="fa-solid fa-arrow-right"></i>
+          <span>下载报名包</span><i class="fa-solid fa-arrow-right"></i>
+          <span>线下填写</span><i class="fa-solid fa-arrow-right"></i>
+          <span>回传材料</span>
+        </div>
+      </div>
+      <div class="compare-box new">
+        <h3><i class="fa-solid fa-circle-check"></i> 今年流程</h3>
+        <div class="flow">
+          <span>进入活动页</span><i class="fa-solid fa-arrow-right"></i>
+          <span>在线报名</span><i class="fa-solid fa-arrow-right"></i>
+          <span>信息确认</span><i class="fa-solid fa-arrow-right"></i>
+          <span>验证提交</span><i class="fa-solid fa-arrow-right"></i>
+          <span>后台审核</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="timeline">
+    <h2 class="section-title"><span>二</span>项目推进计划与时间轴</h2>
+    <div class="timeline">
+      <div class="time-item">
+        <div class="time-dot">1</div>
+        <div class="time-card">
+          <h3>筹备与宣发期</h3>
+          <div class="date">2026年8月 - 9月</div>
+          <ul>
+            <li>完成 AI 创新专项规则的内部审计与协会报备。</li>
+            <li>妙想工作台上线“AI评选验证专区”页面及后台自动化统计数据看板。</li>
+            <li>启动预热宣传，销售团队定向邀约头部及特色券商研究所参评。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="time-item">
+        <div class="time-dot">2</div>
+        <div class="time-card">
+          <h3>报名与接入期</h3>
+          <div class="date">2026年10月 - 11月</div>
+          <ul>
+            <li>参评机构提交《AI应用成效申报表》，附过往数据截图及公章。</li>
+            <li>Choice 技术团队协助参评机构完成 AI 能力的平台接入与连通性测试，优先支持 Skill 形态。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="time-item">
+        <div class="time-dot">3</div>
+        <div class="time-card">
+          <h3>统一集中验证期</h3>
+          <div class="date">2026年11月 - 12月，为期1个月</div>
+          <ul>
+            <li>妙想平台正式开放 AI 验证专区。</li>
+            <li>参评券商联动邀约买方客户登录妙想 Choice 进行实盘调用体验，冲刺平台使用数据。</li>
+            <li>运营团队配合开展“金融AI体验月”活动，全网引流。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="time-item">
+        <div class="time-dot">4</div>
+        <div class="time-card">
+          <h3>核算与颁奖期</h3>
+          <div class="date">2027年1月</div>
+          <ul>
+            <li>数据封板，后台自动导出验证期指标，汇集申报期数据进行标准化打分。</li>
+            <li>安永执行商定审计程序，确认成绩单。</li>
+            <li>随第十四届最佳分析师全榜单同步发布，并举办线下颁奖典礼与金融 AI 生态峰会。</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="materials">
+    <h2 class="section-title"><span>三</span>运营材料</h2>
+    <div class="materials">
+      <div class="material-card">
+        <i class="fa-solid fa-comments"></i>
+        <h3>客户沟通话术</h3>
+        <p>销售联系研究所时可以直接按话术讲，说明今年活动是什么、为什么建议参加、怎么报名、需要准备哪些信息。</p>
+      </div>
+      <div class="material-card">
+        <i class="fa-solid fa-file-lines"></i>
+        <h3>客户说明文件</h3>
+        <p>客户问细节时直接发文件，里面会讲清楚评选介绍、报名方式、填写信息和注意事项。</p>
+      </div>
+      <div class="material-card">
+        <i class="fa-solid fa-file-signature"></i>
+        <h3>授权函</h3>
+        <p>未给 Choice 做数据授权的机构，需要补签研报及数据使用授权函。销售要提前确认授权情况。</p>
+      </div>
+    </div>
+    <div class="highlight">
+      <strong>销售侧重点：</strong>不是自己做材料，也不是手工收一堆报名包；主要是触达重点机构、推动客户报名、确认授权情况，有问题及时反馈。
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title"><span>四</span>报名需要客户准备什么</h2>
+    <div class="check-list">
+      <div class="check-item"><i class="fa-solid fa-check"></i><div><strong>机构信息</strong><br>机构名称、联系人、联系电话、邮箱、机构路演场次。</div></div>
+      <div class="check-item"><i class="fa-solid fa-check"></i><div><strong>团队信息</strong><br>参评方向、首席分析师、团队成员、团队路演场次。</div></div>
+      <div class="check-item"><i class="fa-solid fa-check"></i><div><strong>报名方式</strong><br>客户可在线填写；团队多的，也可以先填模板后后台导入。</div></div>
+      <div class="check-item"><i class="fa-solid fa-check"></i><div><strong>特殊情况</strong><br>未授权机构需签授权函，数据以可获得的研报数量、浏览量等为主。</div></div>
+    </div>
+  </section>
+
+  <section class="section" id="links">
+    <h2 class="section-title"><span>五</span>参考页面</h2>
+    <div class="link-grid">
+      <a class="link-card" href="https://choicew2z.eastmoney.com/activity/analysts2025/?sessionid=#/pc" target="_blank">
+        <div>
+          <strong>往年活动页面</strong>
+          <small>https://choicew2z.eastmoney.com/activity/analysts2025/?sessionid=#/pc</small>
+        </div>
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+      </a>
+      <a class="link-card" href="https://dinglin0925.github.io/analyst-selection-2026/" target="_blank">
+        <div>
+          <strong>今年报名页 Demo</strong>
+          <small>https://dinglin0925.github.io/analyst-selection-2026/</small>
+        </div>
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+      </a>
+    </div>
+  </section>
+
+  <section class="footer-note">
+    <h2>明天沟通可以用这句话收尾</h2>
+    <p>我们会把话术、客户说明文件、报名模板和授权函都准备好。销售这边主要负责把重点机构触达到、把报名动作推进起来、把授权情况提前确认清楚。</p>
+  </section>
+</main>
+</body>
+</html>

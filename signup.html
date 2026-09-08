@@ -137,7 +137,8 @@
   }
   .upload-info h3 { font-size: 15px; color: #1a56db; margin-bottom: 4px; }
   .upload-info p { font-size: 12px; color: #666; }
-  .upload-btns { display: flex; gap: 12px; flex-shrink: 0; }
+  .upload-btns { display: flex; gap: 12px; flex-shrink: 0; align-items: center; flex-wrap: wrap; }
+  .upload-note { width: 100%; color: #c27803; font-size: 12px; text-align: right; }
 
   /* ===== 区块标题（参考图：竖蓝条 + 加粗标题） ===== */
   .section-heading {
@@ -380,10 +381,9 @@
                 <i class="fas fa-upload"></i> 上传已填报名表
                 <input type="file" accept=".pdf,.doc,.docx,.jpg,.png" style="display:none;" onchange="handleFileUpload(this)">
               </label>
-            <div class="form-group col-full">
-                <label>备注</label>
-                <textarea id="remark" placeholder="如有其他说明，请在此填写" style="width:100%;min-height:80px;resize:vertical;border:1px solid #d0d5dd;border-radius:8px;padding:10px 14px;font-size:14px;font-family:inherit;"></textarea>
-              </div>
+            <div class="upload-note">
+              备注：请上传签字或盖章后的报名表，支持 PDF、Word、图片格式。
+            </div>
             </div>
           </div>
 
