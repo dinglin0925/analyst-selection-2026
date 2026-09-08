@@ -699,23 +699,23 @@ a { text-decoration: none; color: inherit; }
     <div class="process-grid" id="processGrid">
       <div class="process-card" data-phase="stats">
         <div class="process-icon"><i class="fas fa-chart-bar"></i></div>
-        <div class="process-label">统计区间</div>
-        <div class="process-date">10.01 ~ 09.30</div>
+        <div class="process-label">评选区间</div>
+        <div class="process-date">2025.10.01 ~ 2026.09.30</div>
       </div>
       <div class="process-card" data-phase="signup">
         <div class="process-icon"><i class="fas fa-user-plus"></i></div>
         <div class="process-label">报名时间</div>
-        <div class="process-date">09.15 ~ 11.21</div>
+        <div class="process-date">2026.10.10 ~ 2026.11.30</div>
       </div>
       <div class="process-card" data-phase="audit">
         <div class="process-icon"><i class="fas fa-clipboard-check"></i></div>
         <div class="process-label">审计时间</div>
-        <div class="process-date">11.24 ~ 12.05</div>
+        <div class="process-date">2026.12.01 ~ 2026.12.31</div>
       </div>
       <div class="process-card" data-phase="result">
         <div class="process-icon"><i class="fas fa-crown"></i></div>
         <div class="process-label">评选发榜</div>
-        <div class="process-date">12.17 ~ 12.31</div>
+        <div class="process-date">2027.01.01 ~ 2027.01.31</div>
       </div>
     </div>
   </section>
@@ -830,7 +830,7 @@ a { text-decoration: none; color: inherit; }
     <div class="cat-notice">
       <h5><i class="fas fa-info-circle" style="color:var(--accent);margin-right:6px;"></i>报名须知</h5>
       <p>参评机构须为依法设立的证券研究机构，具备证券投资咨询业务资格。<br>
-      报名截止日期：<strong>2026年11月21日</strong>。请各机构在规定时间内完成报名材料提交。</p>
+      报名截止日期：<strong>2026年11月30日</strong>。请各机构在规定时间内完成报名材料提交。</p>
     </div>
   </div>
 </section>
@@ -955,19 +955,18 @@ window.addEventListener('scroll', function() {
   }
 
   let activePhase = null;
-  // 统计区间: 10.01 ~ 09.30 (cross-year, Oct 1 to Sep 30)
+  // 评选区间: 2025.10.01 ~ 2026.09.30 (cross-year)
   if ((m >= 10 && m <= 12) || (m <= 9)) {
-    // Within Oct 1 ~ Sep 30
     const start = new Date(m >= 10 ? y : y - 1, 9, 1);
     const end = new Date(m <= 9 ? y : y + 1, 8, 30);
     if (now >= start && now <= end) activePhase = 'stats';
   }
-  // 报名时间: 09.15 ~ 11.21
-  if (isBetween(9, 15, 11, 21)) activePhase = 'signup';
-  // 审计时间: 11.24 ~ 12.05
-  if (isBetween(11, 24, 12, 5)) activePhase = 'audit';
-  // 评选发榜: 12.17 ~ 12.31
-  if (isBetween(12, 17, 12, 31)) activePhase = 'result';
+  // 报名时间: ~ 2026.11.30
+  if (isBetween(1, 1, 11, 30)) activePhase = 'signup';
+  // 审计时间: 2026.12.01 ~ 2026.12.31
+  if (isBetween(12, 1, 12, 31)) activePhase = 'audit';
+  // 评选发榜: 2027.01.01 ~ 2027.01.31
+  if (isBetween(1, 1, 1, 31)) activePhase = 'result';
 
   if (activePhase) {
     document.querySelectorAll('.process-card').forEach(card => {

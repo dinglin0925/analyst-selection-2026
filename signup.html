@@ -285,6 +285,81 @@
   .step-content { display: none; }
   .step-content.active { display: block; }
 
+  /* ===== 评选进程时间轴 ===== */
+  .process-timeline {
+    padding: 20px 36px 10px;
+    background: #f8f9fc;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .process-timeline .process-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .process-timeline .process-title i {
+    color: #1a56db;
+  }
+  .process-timeline .process-steps {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    position: relative;
+  }
+  .process-timeline .process-steps::before {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: 20px;
+    right: 20px;
+    height: 2px;
+    background: #d0d5dd;
+    z-index: 0;
+  }
+  .process-timeline .p-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    flex: 1;
+  }
+  .process-timeline .p-step .p-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #1a56db;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px #1a56db;
+    margin-bottom: 8px;
+  }
+  .process-timeline .p-step .p-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 2px;
+  }
+  .process-timeline .p-step .p-date {
+    font-size: 11px;
+    color: #6b7280;
+  }
+  .process-timeline .p-step.current .p-dot {
+    background: #e85d75;
+    box-shadow: 0 0 0 2px #e85d75;
+    animation: pulse-dot 1.5s infinite;
+  }
+  .process-timeline .p-step.current .p-label {
+    color: #e85d75;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { box-shadow: 0 0 0 2px #e85d75; }
+    50% { box-shadow: 0 0 0 6px rgba(232,93,117,0.3); }
+  }
+
   /* ===== 响应式 ===== */
   @media (max-width: 768px) {
     .form-grid { grid-template-columns: 1fr; }
@@ -293,6 +368,10 @@
     .step-line { width: 30px; }
     .main-wrap { padding: 0 12px; }
     .card-body, .card-header, .card-footer { padding-left: 20px; padding-right: 20px; }
+    .process-timeline { padding: 16px 20px 8px; }
+    .process-timeline .process-steps { flex-wrap: wrap; gap: 12px; }
+    .process-timeline .process-steps::before { display: none; }
+    .process-timeline .p-step { flex: 0 0 45%; }
   }
 </style>
 </head>
@@ -325,6 +404,35 @@
     <div class="card-header">
       <h1>2026 Choice最佳分析师 · 在线报名</h1>
       <button class="btn btn-default" onclick="location.href='index.html'" style="padding:6px 12px;font-size:13px;">关闭</button>
+    </div>
+
+    <!-- 评选进程 -->
+    <div class="process-timeline">
+      <div class="process-title">
+        <i class="fas fa-route"></i> 评选进程
+      </div>
+      <div class="process-steps" id="processSteps">
+        <div class="p-step" data-phase="stats">
+          <div class="p-dot"></div>
+          <div class="p-label">评选区间</div>
+          <div class="p-date">2025.10.01 ~ 2026.09.30</div>
+        </div>
+        <div class="p-step" data-phase="signup">
+          <div class="p-dot"></div>
+          <div class="p-label">报名时间</div>
+          <div class="p-date">2026.10.10 ~ 2026.11.30</div>
+        </div>
+        <div class="p-step" data-phase="audit">
+          <div class="p-dot"></div>
+          <div class="p-label">审计时间</div>
+          <div class="p-date">2026.12.01 ~ 2026.12.31</div>
+        </div>
+        <div class="p-step" data-phase="result">
+          <div class="p-dot"></div>
+          <div class="p-label">评选发榜</div>
+          <div class="p-date">2027.01.01 ~ 2027.01.31</div>
+        </div>
+      </div>
     </div>
 
     <!-- 步骤指示器 -->
@@ -791,6 +899,42 @@
     requestAnimationFrame(()=>t.classList.add('show'));
     setTimeout(()=>t.classList.remove('show'), 2400);
   }
+
+  // ===== 评选进程高亮当前阶段 =====
+  (function highlightProcessPhase() {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = now.getMonth() + 1;
+    const d = now.getDate();
+
+    function isBetween(monthStart, dayStart, monthEnd, dayEnd) {
+      const start = new Date(y, monthStart - 1, dayStart);
+      const end = new Date(y, monthEnd - 1, dayEnd);
+      return now >= start && now <= end;
+    }
+
+    let activePhase = null;
+    // 评选区间: 2025.10.01 ~ 2026.09.30 (cross-year)
+    if ((m >= 10 && m <= 12) || (m <= 9)) {
+      const start = new Date(m >= 10 ? y : y - 1, 9, 1);
+      const end = new Date(m <= 9 ? y : y + 1, 8, 30);
+      if (now >= start && now <= end) activePhase = 'stats';
+    }
+    // 报名时间: ~ 2026.11.30
+    if (isBetween(1, 1, 11, 30)) activePhase = 'signup';
+    // 审计时间: 2026.12.01 ~ 2026.12.31
+    if (isBetween(12, 1, 12, 31)) activePhase = 'audit';
+    // 评选发榜: 2027.01.01 ~ 2027.01.31
+    if (isBetween(1, 1, 1, 31)) activePhase = 'result';
+
+    if (activePhase) {
+      document.querySelectorAll('.p-step').forEach(step => {
+        if (step.dataset.phase === activePhase) {
+          step.classList.add('current');
+        }
+      });
+    }
+  })();
 </script>
 </body>
 </html>
