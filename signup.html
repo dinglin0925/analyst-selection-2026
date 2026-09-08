@@ -371,10 +371,10 @@
           <div class="upload-panel">
             <div class="upload-info">
               <h3>步骤一：下载报名表模板，离线填写后上传</h3>
-              <p>请将附件报名表填写并签字（或盖章）</p>
+              <p>报名截止时间：2026年11月30日。可打印或另存PDF，填写并签字（或盖章）后上传</p>
             </div>
             <div class="upload-btns">
-              <button class="btn btn-primary" onclick="showToast('报名表模板下载中...','info')">
+              <button class="btn btn-primary" onclick="downloadSignupForm()">
                 <i class="fas fa-download"></i> 下载报名表模板
               </button>
               <label class="btn btn-outline" style="cursor:pointer;">
@@ -382,7 +382,7 @@
                 <input type="file" accept=".pdf,.doc,.docx,.jpg,.png" style="display:none;" onchange="handleFileUpload(this)">
               </label>
             <div class="upload-note">
-              备注：请上传签字或盖章后的报名表，支持 PDF、Word、图片格式。
+              备注：请将报名表填写并签字（或盖章）后，扫描或另存为PDF上传。
             </div>
             </div>
           </div>
@@ -726,6 +726,52 @@
     });
     renderTeams();
     goStep(1, false);
+  }
+
+  // 下载/打印报名表（与报名函表格一致，自动带入已填信息，可另存PDF）
+  function downloadSignupForm() {
+    const v = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+    const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    let rows = teams.map(t => `<tr>
+        <td style="height:36px;">${esc(t.direction)}</td>
+        <td>${esc(t.chief)}</td>
+        <td>${esc(t.analysts)}</td>
+        <td>${t.roadshow === '' || t.roadshow == null ? '' : t.roadshow}</td>
+      </tr>`).join('');
+    for (let i = teams.length; i < 6; i++) rows += '<tr><td style="height:36px;"></td><td></td><td></td><td></td></tr>';
+    const win = window.open('', '_blank');
+    win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>第十四届Choice最佳分析师评选报名表</title>
+      <style>
+        body{font-family:"Microsoft YaHei","SimSun",sans-serif;color:#111;margin:36px 44px;}
+        h1{text-align:center;font-size:22px;margin:0;}
+        h2{text-align:center;font-size:18px;margin:6px 0 22px;}
+        table{width:100%;border-collapse:collapse;font-size:13px;}
+        td{border:1px solid #333;padding:8px 10px;vertical-align:top;line-height:1.6;}
+        .label{background:#f2f4f7;width:24%;}
+        .hd{background:#f2f4f7;text-align:center;font-weight:bold;}
+        .sign{margin-top:26px;font-size:14px;line-height:2.4;}
+        .tip{margin-top:22px;font-size:12px;color:#888;}
+        @media print{.tip{display:none;}}
+      </style></head><body>
+      <h1>第十四届Choice“最佳分析师”评选</h1>
+      <h2>报名表</h2>
+      <table>
+        <tr><td class="label">机构名称（全称）</td><td colspan="3">${esc(v('orgName'))}</td></tr>
+        <tr><td class="label">联系地址</td><td colspan="3"></td></tr>
+        <tr><td class="label">联系人</td><td>${esc(v('contact'))}</td><td class="label">联系电话</td><td>${esc(v('phone'))}</td></tr>
+        <tr><td class="label">联系邮箱</td><td colspan="3">${esc(v('email'))}</td></tr>
+        <tr><td class="label">统计时间内机构总的路演场次<br>（本次评比机构奖项加分项，请如实填报）</td><td colspan="3">${esc(v('orgRoadshow'))}</td></tr>
+        <tr><td colspan="4" class="hd">参 选 信 息</td></tr>
+        <tr><td class="hd" style="width:22%">参评行业</td><td class="hd" style="width:18%">首席姓名</td><td class="hd">团队成员</td><td class="hd" style="width:26%">路演场次（加分项，选填）<br>（数据将对外展示）</td></tr>
+        ${rows}
+      </table>
+      <div class="sign">本机构/团队确认参加第十四届Choice“最佳分析师”评选活动。<br><br>
+        报名人签字（或盖章）：＿＿＿＿＿＿＿＿＿＿<br><br>填写日期：＿＿＿＿年＿＿月＿＿日</div>
+      <p class="tip">提示：打印或“另存为PDF”后，请签字（或盖章）再上传至报名页面（PDF格式）。报名截止时间：2026年11月30日。</p>
+      </body></html>`);
+    win.document.close();
+    win.focus();
+    setTimeout(() => { try { win.print(); } catch (e) {} }, 400);
   }
 
   function handleFileUpload(input) {
